@@ -2,6 +2,9 @@ import uuid
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
+
+import secrets
+
 def generate_uuid():
     uid = uuid.uuid4().hex[-8:]
     return uid
@@ -13,3 +16,12 @@ def  validate_emailAdd(value):
         return False
     else:
         return True
+    
+def generate_verification_token():
+    return secrets.token_hex(16)
+    
+
+
+
+
+

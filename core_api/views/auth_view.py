@@ -15,7 +15,21 @@ from ..general_functions import *
 from ..models.consumer_model import *
 from ..serializers.auth_serializer import *
 
-# from ..serializers.auth_serializer import *
+from ..constants import *
+import smtplib, ssl
+from django.core.mail import EmailMessage
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
+
+
+class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return (
+                str(user.is_active) + str(user.pk) + str(timestamp)
+        )
+
+email_verification_token = EmailVerificationTokenGenerator()
+
 
 class apiRegisterAccount(APIView):
     def post(self,request):
@@ -31,7 +45,7 @@ class apiRegisterAccount(APIView):
 
         for field in required_fields:
             if field not in request_data:
-                return Response(data={'status':wrong_input, 'message':wrong_body_vals_msg, 'errors':inc_body_parameter_msg})
+                return Response(data={'status':wrong_input, 'message':wrong_body_vals_msg, 'errors':wrong_body_vals_msg})
             else:
                 if request_data[field] == '':
                     errors[field] = null_field_error
@@ -57,12 +71,35 @@ class apiRegisterAccount(APIView):
 
         serializer = ConsumerRegisterProfileSerializer(data=request_data)
         if serializer.is_valid():
-            message = "Registration Successful"
+            message = "A verification email has been sent to: " + serializer.data['email'] 
             user, _ = User.objects.get_or_create(
                 username = serializer.data['username'],
                 email = serializer.data['email'],
-                password = make_password(serializer.data['password'])
+                is_active = False,
+                password = make_password(serializer.data['password']),               
             )
+            domain = '127.0.0.1:8000'
+
+            
+            email_body = 'Open the link to verify your account: \t' + ""
+
+
+        #      path('activate/<uidb64>/<token>', 
+        #  ActivateView.as_view(), 
+        #  name='activate'),
+
+            # "http://{{ domain }}{% url 'activate' uidb64=uid token=token %}"
+
+            email = EmailMessage(
+                subject = 'Chat Verification Code',
+                body = email_body,
+                from_email = 'mydjangoapp22@gmail.com',
+                to = ['abelebane10@gmail.com'],
+                bcc = ['abelbane@yahoo.com'],
+            )
+
+            email.send()
+
 
             ConsumerModel.objects.create(     
                     uid = generate_uuid(),

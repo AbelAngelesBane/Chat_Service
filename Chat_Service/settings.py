@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import configs as secret_configs
+import configs as configs
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,11 +25,19 @@ SECRET_KEY = 'django-insecure-5+4q3fj*$5ow8dnhpl^_07(uc6c)-dz1vwb)257n@2(h=#fvcu
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = secret_configs.Django.ALLOWED_HOSTS
-DEBUG = secret_configs.Django.DEBUG
-debug_db = secret_configs.Django.DEBUG_DB
+ALLOWED_HOSTS = configs.Django.ALLOWED_HOSTS
+DEBUG = configs.Django.DEBUG
+debug_db = configs.Django.DEBUG_DB
 # settings.py
-
+EMAIL_BACKEND = configs.Django.EMAIL_BACKEND
+EMAIL_BACKEND = configs.Django.EMAIL_BACKEND
+SENDGRID_API_KEY = configs.Django.SENDGRID_API_KEY
+EMAIL_PORT = 465
+# EMAIL_USE_TLS = configs.Django.EMAIL_USE_TLS
+# EMAIL_HOST = configs.Django.EMAIL_HOST
+# EMAIL_HOST_USER = configs.Django.EMAIL_HOST
+# EMAIL_HOST_PASSWORD = configs.Django.EMAIL_HOST_PASSWORD
+EMAIL_PORT = configs.Django.EMAIL_PORT
 
 
 # Application definition
